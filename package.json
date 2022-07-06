@@ -1,0 +1,23 @@
+{
+  "name": "htdev-ilya-komar",
+  "version": "1.0.0",
+  "description": "SPA which allows to create notes by filling up a form",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Helias17/htdev-ilya-komar.git"
+  },
+  "author": "Ilya Komar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Helias17/htdev-ilya-komar/issues"
+  },
+  "homepage": "https://github.com/Helias17/htdev-ilya-komar#readme",
+  "devDependencies": {
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0"
+  }
+}
