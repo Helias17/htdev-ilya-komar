@@ -7,6 +7,7 @@ import { getPosts } from "./services/getPosts";
 import LinearProgress from "@mui/material/LinearProgress";
 import { PAGE_SIZE } from "./constants";
 import Box from "@mui/material/Box";
+import Alert from "@mui/material/Alert";
 
 export const PostsList = () => {
   const [page, setPage] = useState(1);
@@ -24,7 +25,7 @@ export const PostsList = () => {
       </Box>
     );
   }
-  if (postsData) {
+  if (postsData && postsData.length) {
     const posts = postsData.map((postItem, index) => (
       <Grid item xs={12} sm={6} key={index}>
         <Post data={postItem} order={index} />
@@ -44,6 +45,14 @@ export const PostsList = () => {
           count={Math.ceil(posts.length / 2)}
         />
       </>
+    );
+  }
+
+  if (postsData && postsData.length === 0) {
+    return (
+      <Alert severity="info" sx={{ marginTop: 2 }}>
+        No posts yet. Try to add the first one.
+      </Alert>
     );
   }
 

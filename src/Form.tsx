@@ -128,9 +128,13 @@ export const Form = () => {
                   onChange={handleChange}
                   disabled={isFormBlocked}
                 >
-                  {timezonesData.data.map((timezoneItem: string) => (
-                    <MenuItem value={timezoneItem}>{timezoneItem}</MenuItem>
-                  ))}
+                  {timezonesData.data.map(
+                    (timezoneItem: string, index: number) => (
+                      <MenuItem value={timezoneItem} key={index}>
+                        {timezoneItem}
+                      </MenuItem>
+                    )
+                  )}
                 </Select>
               </FormControl>
             </Grid>
