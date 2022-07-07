@@ -11,6 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { FormData } from "./types/type";
 import { savePost } from "./services/savePost";
 import { getPosts } from "./services/getPosts";
+import { timezoneApi } from "./api/api";
 import LinearProgress from "@mui/material/LinearProgress";
 
 export const Form = () => {
@@ -33,9 +34,17 @@ export const Form = () => {
 
   const {
     data: postsData,
-    error,
+    error: postsDataError,
     isPending: isPendingPosts,
   } = useAsync(getPosts);
+
+  const {
+    data: timezonesData,
+    error: timezoneError,
+    isPending: isPendingTimezones,
+  } = useAsync(timezoneApi.getTimezoneList);
+
+  console.log(timezonesData);
 
   useEffect(() => {
     const author =
@@ -62,7 +71,7 @@ export const Form = () => {
     );
   }
 
-  if (postsData) {
+  if (postsData && timezonesData) {
     return (
       <>
         <Box
@@ -106,9 +115,9 @@ export const Form = () => {
                   label="Timezone"
                   onChange={handleChange}
                 >
-                  <MenuItem value="Europe/Malta">Europe/Malta</MenuItem>
-                  <MenuItem value="Europe/Minsk">Europe/Minsk</MenuItem>
-                  <MenuItem value="Europe/Moscow">Europe/Moscow</MenuItem>
+                  {timezonesData.data.map((timezoneItem: string) => (
+                    <MenuItem value={timezoneItem}>{timezoneItem}</MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
