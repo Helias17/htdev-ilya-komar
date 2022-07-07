@@ -13,8 +13,16 @@ import { savePost } from "./services/savePost";
 import { getPosts } from "./services/getPosts";
 import { timezoneApi } from "./api/api";
 import LinearProgress from "@mui/material/LinearProgress";
+import SendIcon from "@mui/icons-material/Send";
+import { useSelector, useDispatch } from "react-redux";
+import { blockForm, unblockForm } from "./redux/formSlice";
+import type { RootState, AppDispatch } from "./redux/store";
 
 export const Form = () => {
+  const isFormBlocked = useSelector((state: RootState) => state.form.value);
+  const dispatch = useDispatch();
+  console.log(isFormBlocked);
+
   const [formData, setFormData] = React.useState<FormData>({
     post: "",
     author: "",
@@ -29,6 +37,7 @@ export const Form = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    dispatch(blockForm());
     savePost(formData);
   };
 
@@ -43,8 +52,6 @@ export const Form = () => {
     error: timezoneError,
     isPending: isPendingTimezones,
   } = useAsync(timezoneApi.getTimezoneList);
-
-  console.log(timezonesData);
 
   useEffect(() => {
     const author =
@@ -122,7 +129,12 @@ export const Form = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <Button type="submit" variant="contained">
+              <Button
+                type="submit"
+                variant="contained"
+                endIcon={<SendIcon />}
+                disabled={isFormBlocked}
+              >
                 Submit
               </Button>
             </Grid>

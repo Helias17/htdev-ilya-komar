@@ -9,5 +9,4 @@ export const savePost = async (data: FormData) => {
   const posts = await getPosts();
   posts.push({ ...data, date: timezoneData.data });
   localStorage.setItem("ilya-komar-app-posts", JSON.stringify(posts));
-  console.log(posts);
 };
