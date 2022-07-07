@@ -14,14 +14,15 @@ import { getPosts } from "./services/getPosts";
 import { timezoneApi } from "./api/api";
 import LinearProgress from "@mui/material/LinearProgress";
 import SendIcon from "@mui/icons-material/Send";
+import SaveIcon from "@mui/icons-material/Save";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { useSelector, useDispatch } from "react-redux";
 import { blockForm, unblockForm } from "./redux/formSlice";
-import type { RootState, AppDispatch } from "./redux/store";
+import type { RootState } from "./redux/store";
 
 export const Form = () => {
   const isFormBlocked = useSelector((state: RootState) => state.form.value);
   const dispatch = useDispatch();
-  console.log(isFormBlocked);
 
   const [formData, setFormData] = React.useState<FormData>({
     post: "",
@@ -35,10 +36,12 @@ export const Form = () => {
     setFormData(newFormData);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     dispatch(blockForm());
-    savePost(formData);
+    await savePost(formData);
+    dispatch(unblockForm());
+    setFormData({ ...formData, post: "" });
   };
 
   const {
@@ -98,6 +101,7 @@ export const Form = () => {
                 rows={4}
                 onChange={handleChange}
                 value={formData.post}
+                disabled={isFormBlocked}
               />
             </Grid>
             <Grid item xs={8}>
@@ -109,6 +113,7 @@ export const Form = () => {
                 required
                 onChange={handleChange}
                 value={formData.author}
+                disabled={isFormBlocked}
               />
             </Grid>
             <Grid item xs={4}>
@@ -121,6 +126,7 @@ export const Form = () => {
                   value={formData.timezone}
                   label="Timezone"
                   onChange={handleChange}
+                  disabled={isFormBlocked}
                 >
                   {timezonesData.data.map((timezoneItem: string) => (
                     <MenuItem value={timezoneItem}>{timezoneItem}</MenuItem>
@@ -129,14 +135,25 @@ export const Form = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <Button
-                type="submit"
-                variant="contained"
-                endIcon={<SendIcon />}
-                disabled={isFormBlocked}
-              >
-                Submit
-              </Button>
+              {isFormBlocked ? (
+                <LoadingButton
+                  loading
+                  loadingPosition="start"
+                  variant="outlined"
+                  startIcon={<SaveIcon />}
+                >
+                  Saving
+                </LoadingButton>
+              ) : (
+                <Button
+                  type="submit"
+                  variant="contained"
+                  endIcon={<SendIcon />}
+                  disabled={isFormBlocked}
+                >
+                  Submit
+                </Button>
+              )}
             </Grid>
           </Grid>
         </Box>
