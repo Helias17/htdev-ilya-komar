@@ -39,11 +39,15 @@ export const PostsList = () => {
             PAGE_SIZE * (page - 1) + PAGE_SIZE
           )}
         </Grid>
-        <Pagination
-          onChange={setPage}
-          page={page}
-          count={Math.ceil(posts.length / 2)}
-        />
+        {posts.length > PAGE_SIZE ? (
+          <Pagination
+            onChange={setPage}
+            page={page}
+            count={Math.ceil(posts.length / 2)}
+          />
+        ) : (
+          ""
+        )}
       </>
     );
   }

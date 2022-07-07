@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 
 const container = document.getElementById("app");
 const root = ReactDOMClient.createRoot(container);
-localStorage.clear();
+
 root.render(
   <Provider store={store}>
     <App />
