@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import formReducer from "./formSlice";
+import pageSizeReducer from "./pageSizeSlice";
 
 const store = configureStore({
   reducer: {
     form: formReducer,
+    pageSize: pageSizeReducer,
   },
 });
 

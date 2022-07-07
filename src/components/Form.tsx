@@ -8,17 +8,17 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import { FormData } from "./types/type";
-import { savePost } from "./services/savePost";
-import { getPosts } from "./services/getPosts";
-import { timezoneApi } from "./api/api";
+import { FormData } from "../types/type";
+import { savePost } from "../services/savePost";
+import { getPosts } from "../services/getPosts";
+import { timezoneApi } from "../api/api";
 import LinearProgress from "@mui/material/LinearProgress";
 import SendIcon from "@mui/icons-material/Send";
 import SaveIcon from "@mui/icons-material/Save";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useSelector, useDispatch } from "react-redux";
-import { blockForm, unblockForm } from "./redux/formSlice";
-import type { RootState } from "./redux/store";
+import { blockForm, unblockForm } from "../redux/formSlice";
+import type { RootState } from "../redux/store";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
@@ -47,9 +47,6 @@ export const Form = () => {
 
   const action = (
     <React.Fragment>
-      <Button color="secondary" size="small" onClick={handleCloseSnackbar}>
-        UNDO
-      </Button>
       <IconButton
         size="small"
         aria-label="close"
@@ -128,7 +125,7 @@ export const Form = () => {
       <>
         <Box
           component="form"
-          noValidate
+          noValidate={false}
           autoComplete="off"
           onSubmit={handleSubmit}
         >
@@ -156,6 +153,7 @@ export const Form = () => {
                 onChange={handleChange}
                 value={formData.author}
                 disabled={isFormBlocked}
+                inputProps={{ maxLength: 100 }}
               />
             </Grid>
             <Grid item xs={4}>
@@ -169,6 +167,7 @@ export const Form = () => {
                   label="Timezone"
                   onChange={handleChange}
                   disabled={isFormBlocked}
+                  required
                 >
                   {timezonesData.data.map(
                     (timezoneItem: string, index: number) => (

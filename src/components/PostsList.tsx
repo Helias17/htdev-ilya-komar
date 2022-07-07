@@ -1,15 +1,18 @@
 import Grid from "@mui/material/Grid";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { useAsync } from "react-async";
 import Pagination from "./Pagination";
 import { Post } from "./Post";
-import { getPosts } from "./services/getPosts";
+import { getPosts } from "../services/getPosts";
 import LinearProgress from "@mui/material/LinearProgress";
-import { PAGE_SIZE } from "./constants";
+import { PAGE_SIZE } from "../constants";
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
+import { RootState } from "../redux/store";
 
 export const PostsList = () => {
+  const postsPerPage = useSelector((state: RootState) => state.pageSize.value);
   const [page, setPage] = useState(1);
 
   const {
@@ -17,6 +20,14 @@ export const PostsList = () => {
     error,
     isPending: isPendingPosts,
   } = useAsync(getPosts);
+
+  if (error) {
+    return (
+      <Alert severity="error" sx={{ marginTop: 2 }}>
+        Error: {error.message}
+      </Alert>
+    );
+  }
 
   if (isPendingPosts) {
     return (
@@ -35,15 +46,15 @@ export const PostsList = () => {
       <>
         <Grid container spacing={2} wrap="wrap">
           {posts.slice(
-            PAGE_SIZE * (page - 1),
-            PAGE_SIZE * (page - 1) + PAGE_SIZE
+            postsPerPage * (page - 1),
+            postsPerPage * (page - 1) + postsPerPage
           )}
         </Grid>
-        {posts.length > PAGE_SIZE ? (
+        {posts.length > postsPerPage ? (
           <Pagination
             onChange={setPage}
             page={page}
-            count={Math.ceil(posts.length / 2)}
+            count={Math.ceil(posts.length / postsPerPage)}
           />
         ) : (
           ""
