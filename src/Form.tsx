@@ -19,6 +19,10 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { useSelector, useDispatch } from "react-redux";
 import { blockForm, unblockForm } from "./redux/formSlice";
 import type { RootState } from "./redux/store";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const Form = () => {
   const isFormBlocked = useSelector((state: RootState) => state.form.value);
@@ -30,6 +34,33 @@ export const Form = () => {
     timezone: "",
   });
 
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const handleCloseSnackbar = (
+    _event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+
+  const action = (
+    <React.Fragment>
+      <Button color="secondary" size="small" onClick={handleCloseSnackbar}>
+        UNDO
+      </Button>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleCloseSnackbar}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const id = (event.target.id || event.target.name) as keyof FormData;
     const newFormData = { ...formData, [id]: event.target.value };
@@ -39,9 +70,12 @@ export const Form = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     dispatch(blockForm());
-    await savePost(formData);
+    const savePostResult = await savePost(formData);
     dispatch(unblockForm());
-    setFormData({ ...formData, post: "" });
+    setOpenSnackbar(true);
+    if (savePostResult) {
+      setFormData({ ...formData, post: "" });
+    }
   };
 
   const {
@@ -78,6 +112,14 @@ export const Form = () => {
       <Box sx={{ width: "100%", paddingTop: 5 }}>
         <LinearProgress />
       </Box>
+    );
+  }
+
+  if (timezoneError || postsDataError) {
+    return (
+      <Alert severity="error" sx={{ marginTop: 2 }}>
+        Error: {timezoneError.message || postsDataError.message}
+      </Alert>
     );
   }
 
@@ -161,6 +203,17 @@ export const Form = () => {
             </Grid>
           </Grid>
         </Box>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={3000}
+          onClose={handleCloseSnackbar}
+          message={
+            formData.post
+              ? "Error occured when submitting..."
+              : "Post successfully added!"
+          }
+          action={action}
+        />
       </>
     );
   }
